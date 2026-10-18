@@ -18,6 +18,17 @@ test("client bundle registers under the package name", () => {
   assert.equal(match[1], pkg.name, "registered id must equal package.json name");
 });
 
+test("settings explain cross-session memory scope, deletion, and retention in both locales", () => {
+  for (const key of ["scopeTitle", "scopeDesc", "scopeShared", "scopeDelete", "scopeRetention"]) {
+    assert.ok(clientSource.includes(`"memory.settings.${key}"`), `missing localized scope copy: ${key}`);
+  }
+  assert.ok(clientSource.includes("跨会话共享，不按单个会话隔离"));
+  assert.ok(clientSource.includes("删除对话不会删除已保存的记忆"));
+  assert.ok(clientSource.includes("普通记忆默认不会按时间自动过期"));
+  assert.ok(clientSource.includes("shared across sessions, not isolated per conversation"));
+  assert.ok(clientSource.includes("Regular memories do not expire automatically by age"));
+});
+
 // client.js is hand-authored under lib/ only (no src/ counterpart), so the
 // src->lib sync must never prune it.
 test("client bundle is lib-only with no src counterpart", () => {
